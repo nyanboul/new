@@ -7,7 +7,7 @@ import { supabase } from '@/lib/supabase';
 // TagInputのインポートパスを修正
 import TagInput from '@/components/TagInput';
 // 他のコンポーネントのパスも確認して修正
-import Dropzone from '@/components/Dropzone';
+import Dropzone from '@/components/items/Dropzone';
 import DynamicChart from '@/components/DynamicChart';
 import { v4 as uuidv4 } from 'uuid';
 import Image from 'next/image';
