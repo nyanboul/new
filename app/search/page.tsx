@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase-client';
 import Image from 'next/image';
@@ -9,11 +9,48 @@ import { getConditionColor } from '@/utils/itemHelpers';
 import Pagination from '@/components/Pagination';
 import { ITEMS_PER_PAGE } from '@/constants/pagination';
 
-export default function SearchPage() {
+// 商品の型定義
+interface ItemImage {
+  id: string;
+  url: string;
+  item_id: string;
+}
+
+interface Seller {
+  username: string;
+}
+
+interface Item {
+  id: string;
+  title: string;
+  price: number;
+  condition?: string;
+  status: string;
+  created_at: string;
+  description: string;
+  seller_id: string;
+  seller: Seller;
+  images: ItemImage[];
+}
+
+// 静的な部分
+function StaticSearchContent() {
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-2xl font-bold mb-4">検索結果</h1>
+      <div className="flex justify-center items-center my-8">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900"></div>
+      </div>
+    </div>
+  );
+}
+
+// 動的コンテンツ（useSearchParamsを使用）
+function DynamicSearchContent() {
   const searchParams = useSearchParams();
   const keyword = searchParams.get('q') || '';
   const [loading, setLoading] = useState(false);
-  const [items, setItems] = useState<any[]>([]);
+  const [items, setItems] = useState<Item[]>([]);
   const [totalItems, setTotalItems] = useState(0);
   const currentPage = searchParams.get('page') ? parseInt(searchParams.get('page')!) : 1;
 
@@ -147,5 +184,13 @@ export default function SearchPage() {
         <div className="text-center py-10">検索結果がありませんでした</div>
       )}
     </div>
+  );
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense fallback={<StaticSearchContent />}>
+      <DynamicSearchContent />
+    </Suspense>
   );
 }
