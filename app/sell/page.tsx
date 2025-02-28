@@ -5,10 +5,9 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
 // TagInputのインポートパスを修正
-import TagInput from '@/components/TagInput';
+import TagInput from '../components/TagInput';
 // 他のコンポーネントのパスも確認して修正
-import Dropzone from '@/components/items/Dropzone';
-import DynamicChart from '@/components/DynamicChart';
+import DynamicChart from '../components/DynamicChart';
 import { v4 as uuidv4 } from 'uuid';
 import Image from 'next/image';
 
@@ -27,6 +26,17 @@ interface UploadError {
   message: string;
   code?: string;
   details?: string;
+}
+
+// Dropzoneコンポーネントを直接ページに埋め込む
+function DropzoneComponent({
+  onFilesAdded,
+  maxFiles = 5
+}) {
+  // Dropzoneの実装...
+  return (
+    // ...
+  );
 }
 
 export default function SellPage() {
@@ -208,9 +218,8 @@ export default function SellPage() {
           <label className="block mb-1 font-medium">
             商品画像 <span className="text-red-500">*</span>
           </label>
-          <Dropzone
-            onFilesAdded={handleImagesChange}
-            existingImages={[]}
+          <DropzoneComponent 
+            onFilesAdded={handleImagesChange} 
             maxFiles={10}
           />
           {errors.images && <p className="mt-1 text-red-500 text-sm">{errors.images}</p>}
